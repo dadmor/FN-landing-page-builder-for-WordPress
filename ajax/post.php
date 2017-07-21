@@ -13,6 +13,10 @@ if( current_user_can('edit_others_pages') ) {
 			$data['content'] = base64_decode ($data['content']); 
 			$data['contentpart'] = base64_decode ($data['contentpart']); 
 
+			/* replace tinny quotes for " */
+			$data['content'] = str_replace("%#%", "\"", $data['content']);
+			$data['contentpart'] = str_replace("%#%", "\"", $data['contentpart']);
+
 			// Update post 37
 			$my_post = array(
 				'ID' => $post->ID,

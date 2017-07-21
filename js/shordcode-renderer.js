@@ -3,11 +3,10 @@
 
 		init : function(ed, url) {
 			var _t = this;
-			//t.url = url;
 
 			//replace shortcode before editor content set
 			ed.onBeforeSetContent.add(function(ed, o) {
-				o.content = _t._do_spot(o.content);
+				o.content = _t._do_spot(o.content,_t);
 			});
 			
 			//replace shortcode as its inserted into editor (which uses the exec command)
@@ -23,47 +22,39 @@
 			});
 		},
 
-		_do_spot : function(co) {
+		_do_spot : function(co,_t) {
 			//console.log(co);
 			/*return co.replace(/\[contact_form([^\]]*)\]/g, function(a,b){
 				return '<div style="border:2px dashed #333" onclick="alert(\'asdas\')">'+tinymce.DOM.encode(b)+'</div>';
 			});*/
 
-			//co.replace()
-			
-
-			var res = co.replace(/\[_contact_form([^\]]*)\]/g, '<div class="shordcode_render_representation  contact_form" style="background:#c7c7c7; text-align:center; padding:1em" contenteditable=false>Contact Form</div>');
-			return res;
+			var _res = co.replace(/(\[([\w_]+)[^\]]*\]([^\[]*\[\/\2])?)/g, function(a, b, c){
+				return '<div class="shortcode_render" contenteditable=false data-repr=\''+tinymce.DOM.encode(a.slice(1, -1))+'\'>'+c+'<div class="shortcode_end">end</div></div>';
+			});
+			return _res;
 
 		},
 
 		_get_spot : function(co) {
-
-			function getAttr(s, n) {
-				n = new RegExp(n + '=\"([^\"]+)\"', 'g').exec(s);
-				return n ? tinymce.DOM.decode(n[1]) : '';
-			};
-
-			return co.replace(/(?:<p[^>]*>)*(<img[^>]+>)(?:<\/p>)*/g, function(a,im) {
-				var cls = getAttr(im, 'class');
-
-				if ( cls.indexOf('wpSpot') != -1 )
-					return '<p>['+tinymce.trim(getAttr(im, 'title'))+']</p>';
-
-				return a;
+			_res = co.replace(/<div class="shortcode_render" contenteditable="false" data-repr="([^"]*)(?:(?!<div class="shortcode_end">).)*(<div class="shortcode_end">)(?:(?!<\/div><\/div>).)*<\/div><\/div>/g, function(a, b){
+				return '['+tinymce.DOM.decode(b)+']';
 			});
-		},
-
-		/*getInfo : function() {
-			return {
-				longname : 'Spots shortcode replace',
-				author : 'Simon Dunton',
-				authorurl : 'http://www.wpsites.co.uk',
-				infourl : '',
-				version : "1.0"
-			};
-		}*/
+			return _res;
+		}
 	});
+
+	var tiny_element_click = function(e){
+
+		try {
+    		var code_data = e.target.closest('.shortcode_render').getAttribute('data-repr');
+    		edit_code(code_data);
+		}
+		catch(err) {}
+
+	}
 
 	tinymce.PluginManager.add('icitspots', tinymce.plugins.icitspots);
 //})();
+
+
+

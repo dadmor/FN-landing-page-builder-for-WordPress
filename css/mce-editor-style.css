@@ -1,0 +1,14 @@
+/* inside tinny */
+.shortcode_render{
+	background: #eee;
+	padding: 1em;
+	text-align: center;
+	border: 1px solid #ccc;
+	text-transform: uppercase;
+}
+.shortcode_render:hover{
+	cursor:pointer;
+}
+.shortcode_end{
+	display:none;
+}
