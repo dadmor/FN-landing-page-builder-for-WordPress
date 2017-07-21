@@ -1,5 +1,7 @@
 # FN-landing-page-builder-for-WordPress
 
+![Editor first view](https://github.com/dadmor/FN-landing-page-builder-for-WordPress/blob/master/screenshot1.png)
+
 Install and run plugin in WordPress
 
 # Create editable template
