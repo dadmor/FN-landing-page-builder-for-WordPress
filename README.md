@@ -12,3 +12,7 @@ Class "FN_edit" set element as editable on frontend
 # Run frontend editor
 
 Click edit page on WordPress top bar and change conten with editable areas. 
+
+# Rich shortcode API
+
+Graphical pepresentation all defined shordcodes with aditor. Customizable data set to all of them.
