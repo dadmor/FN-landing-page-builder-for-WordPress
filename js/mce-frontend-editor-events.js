@@ -2,10 +2,18 @@ var editableClass = 'FN_edit';
 var content_main_container_selector = '.entry-content';
 var area_index = null;
 
+/* create active areas */
 var classname = document.getElementsByClassName(editableClass);
-for (var i = 0; i < classname.length; i++) {
-	classname[i].addEventListener('click', selectEditableArea, false);
-	classname[i].setAttribute('data-index',i);
+if(classname.length != 0){
+    for (var i = 0; i < classname.length; i++) {
+    	classname[i].addEventListener('click', selectEditableArea, false);
+    	classname[i].setAttribute('data-index',i);
+    }
+}else{
+    document.querySelector('.entry-content').addEventListener('click', selectEditableArea, false);
+    document.querySelector('.entry-content').setAttribute('data-index',0);
+    /* to do add div inside entry content with fn-edit class */
+    document.querySelector('.entry-content').classList.add(editableClass);
 }
 //_D_mask.addEventListener('click', outEditableArea, false);
 var _D_editor = document.getElementById('wp-FN_frontend_editor-wrap');

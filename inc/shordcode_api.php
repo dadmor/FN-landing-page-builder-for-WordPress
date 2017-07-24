@@ -4,7 +4,7 @@
 add_action('media_buttons_context','add_my_tinymce_media_button');
 function add_my_tinymce_media_button($context){
 
-	return $context.='<a href="#FN-editor-modal" onclick="dot_content(data.shortcodes,template.shortcodes,target_tpl.popup)" class="button"><span class="dashicons dashicons-screenoptions"></span>Add component</a>';
+	return $context.='<a href="#FN-editor-modal" onclick="dot_content(shortcode_data.shortcodes,template.shortcodes,target_tpl.popup)" class="button"><span class="dashicons dashicons-screenoptions"></span>Add component</a>';
 }
 
 //javascript code needed to make shortcode appear in TinyMCE edtor
@@ -13,47 +13,47 @@ add_action('admin_footer','my_shortcode_add_shortcode_to_editor');
 function my_shortcode_add_shortcode_to_editor(){?>
 
 <script>
-
 	var target_tpl = {
 		"popup" : document.getElementById('modal-body')
 	}
 
-	var data = {
+	var shortcode_data = {
 		'shortcodes':[
 			{
-			"shordcode":"autoresponder",
+			"shortcode":"autoresponder",
 			"name":"Autoresponder",
 			"ico":"megaphone",
 			"options":true
 			},
 			{
-			"shordcode":"contact_form",	
+			"shortcode":"contact_form",	
 			"name":"Contact form",
 			"ico":"email-alt",
 			"options":false
 			},
 			{
-			"shordcode":"ico",
+			"shortcode":"ico",
 			"name":"Icons",
 			"ico":"awards",
-			"options":false
+			"options":true
 			},
 			{
-			"shordcode":"gallery",
+			"shortcode":"gallery",
 			"name":"Gallery",
 			"ico":"format-gallery",
 			"options":null
 			},
 			{
-			"shordcode":"boutique_banner",
+			"shortcode":"boutique_banner",
 			"name":"boutique_banner",
 			"ico":"paperclip",
 			"options":false
 			}
 		],
 		'autoresponder':{
-			"title":"Contact Form Options",
-			"description":"Select active fields on contanct form",
+			"title":"Autoresponder Form Options",
+			"description":"Select active fields on autoresponder form",
+			"shortcode":"autoresponder",
 			"form":[
 					{
 						"title":"User name field",
@@ -71,11 +71,29 @@ function my_shortcode_add_shortcode_to_editor(){?>
 					},
 					{
 						"title":"User phone field",
-						"check_name":"useremail_active",
+						"check_name":"userphone_active",
 						"check_value":"checked",
 						"field_name":"userphone",
 						"field_value":"Insert phone",
 					},
+				],
+			},
+		'ico':{
+			"title":"Icons",
+			"description":"Choose icon",
+			"shortcode":"ico",
+			"form":[
+					{
+						"title":"Icon name",
+						"field_name":"username",
+						"field_value":"Insert name",
+					},
+					{
+						"title":"Icon size",						
+						"field_name":"useremail",
+						"field_value":"Insert email",
+					},
+					
 				]
 		}
 
@@ -84,11 +102,12 @@ function my_shortcode_add_shortcode_to_editor(){?>
 		'shortcodes':
 		`
 			<div class="codes-wrap">
+
 				{{~it:value:index}}
 				{{? value.options }}
-					<div data-index="{{=index}}" onclick="dot_content(data.{{=value.shordcode}},template.{{=value.shordcode}},target_tpl.popup)">
+					<div data-index="{{=index}}" onclick="dot_content(shortcode_data.{{=value.shortcode}},template.{{=value.shortcode}},target_tpl.popup)">
 				{{??}}
-					<div data-index="{{=index}}" onclick="insert_my_shordcode('{{=value.shordcode}}')">
+					<div data-index="{{=index}}" onclick="insert_my_shortcode('{{=value.shortcode}}')">
 				{{?}}	
 					<div class="dashicons dashicons-{{=value.ico}}"></div>
 					<div class="description">{{=value.name}}</div>
@@ -98,28 +117,61 @@ function my_shortcode_add_shortcode_to_editor(){?>
 		`,
 		'autoresponder':
 		`
-			<div class="form-wrap">
+			<div class="tabs">
+				<div class="active" data-target="tab-1" >
+					Autoresponder form options
+				</div>
+				<div data-target="tab-1" onclick="dot_content(shortcode_data.autoresponder,template.autoresponder,target_tpl.popup)">
+					Autoresponder mailing options
+				</div>
+			</div>
+
+			<div class="code-form-wrap" data-tab="tab-1">
 				<h2>{{=it.title}}</h2>
 				<p>{{=it.description}}</p>
-				<form id="contact-form-edit">
+				<form id="{{=it.shortcode}}-edit">
 					{{~it.form:value:index}}
 						<div class="form-row">
-							<input class="row_prefix" name="{{=value.check_name}}" checked="{{=value.check_valuee}}" type="checkbox" />
+							<input class="row_checkbox" name="{{=value.check_name}}" checked="{{=value.check_value}}" type="checkbox" onclick="checkbox_toggle_row(this)"/>
 							<label>{{=value.title}}</label>
 							<input class="input" name="{{=value.field_name}}" value="{{=value.field_value}}"/>
 						</div>
 					{{~}}
 				</form>
-				<button class="submit" onclick="insert_my_shordcode('contact_form','contact-form-edit')">Insert component</button>
+				<button class="submit" onclick="insert_my_shortcode('{{=it.shortcode}}','{{=it.shortcode}}-edit')">Insert component</button>
 				<br>
 			</div>
+
+			<div class="code-form-wrap" data-tab="tab-2">
+				
+			</div>
+		`,
+		'ico':
+		`
+			
+
+			<div class="code-ico-wrap">
+				<h2>{{=it.title}}</h2>
+				<p>{{=it.description}}</p>
+				<form id="{{=it.shortcode}}-edit">
+					{{~it.form:value:index}}
+						<div class="form-row">							
+							<label>{{=value.title}}</label>
+							<input class="input" name="{{=value.field_name}}" value="{{=value.field_value}}"/>
+						</div>
+					{{~}}
+				</form>
+				<button class="submit" onclick="insert_my_shortcode('{{=it.shortcode}}','{{=it.shortcode}}-edit')">Insert component</button>
+				<br>
+			</div>
+
 		`
 	}
 
-	function insert_my_shordcode(_name,_form = null){
+	function insert_my_shortcode(_name,_form = null){
 		if(_form){
 			var data = serializeForm_toArray(document.getElementById(_form));
-			var params = array_to_shordcode(data);
+			var params = array_to_shortcode(data);
 		}else{
 			var params = '';
 		}
@@ -128,20 +180,58 @@ function my_shortcode_add_shortcode_to_editor(){?>
 	}
 
 	var edit_code = function(params){
-		for (var i = 0; i < data.shortcodes.length; i++) {
-			if(data.shortcodes[i].options){
-				console.log('edit me');
+		var code = params.split(' ')[0];
+		params = params.replace(/"/g,'","');
+		params = params.replace(/=",/g,'":"');
+		params = params.replace(/"," /g,'","');
+		params = params.replace(/""/g,'"');
+		params = params.replace(code+' ','');
+		params = params.slice(0,-2);
+		params = '{"'+params+'}';
+		params = JSON.parse(params);
+
+		for (var i = 0; i < shortcode_data.shortcodes.length; i++) {
+			if( shortcode_data.shortcodes[i]['shortcode'] == code ){
+				if(shortcode_data.shortcodes[i].options){
+					window.location.href = "#FN-editor-modal";
+					dot_content(shortcode_data[code],template[code],target_tpl.popup);
+				}
 			}
 		}
-		
-		window.location.href = "#FN-editor-modal";
-		console.log(params);
+		/* merge with existed data */
+		//console.log(params);
+		var check_inputs = target_tpl.popup.querySelectorAll('input');
+		for (var i = 0; i < check_inputs.length; i++) {
+			var get_val = params[check_inputs[i].name]
+			check_inputs[i].value = get_val;
+
+			//console.log(check_inputs[i].name+':'+get_val);
+
+			if(check_inputs[i].type == 'checkbox'){
+				
+				if( check_inputs[i].value == 'on'){
+					console.log('check_inputs[i].checked true');
+					check_inputs[i].checked = true;
+				}else{
+					console.log('check_inputs[i].checked false');
+					check_inputs[i].checked = false;
+					//TODO - hidde is row
+				}
+				
+			}
+	    }
+	    //console.log(params);
+	
 	}
 
 	var dot_content = function(_data,_template,_target){
 		var tempFn = doT.template(_template);
 		var resultText = tempFn(_data);
 		_target.innerHTML = resultText;
+	}
+
+	var close_modal = function(){
+		window.location.href = "#";
 	}
 
 	function getQueryParam(name) {
@@ -176,7 +266,7 @@ function my_shortcode_add_shortcode_to_editor(){?>
 	    return s;
 	}
 
-	function array_to_shordcode(_array){
+	function array_to_shortcode(_array){
 		var url = "";
 		_array.forEach(function(e){
 			url += e.name + '="' + e.value + '" ';
@@ -187,7 +277,7 @@ function my_shortcode_add_shortcode_to_editor(){?>
 	/* open modal by query string */
 	var query_modal_data = getQueryParam('modal-start');
 	if(query_modal_data){
-		dot_content(data[query_modal_data],template[query_modal_data],target_tpl.popup);
+		dot_content(shortcode_data[query_modal_data],template[query_modal_data],target_tpl.popup);
 	}else{
 		/* open modal with first load mesage */
 		window.location.href = "#FN-editor-modal";
@@ -198,6 +288,19 @@ function my_shortcode_add_shortcode_to_editor(){?>
 			window.location.href = "#";
 		}
 	}
+
+	/* modal effects */
+
+	var checkbox_toggle_row = function(_t){
+		if(_t.checked){
+			_t.closest('.form-row').classList.remove('inactive');
+		}else{
+			_t.closest('.form-row').classList.add('inactive');
+		}
+		
+		
+	}
+
 </script>
 <?php
 }

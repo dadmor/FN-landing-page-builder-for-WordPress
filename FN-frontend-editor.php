@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: FN frontend editor
-Description: Another frontend editor (created by FutureNet.club)
+Description: Template system based on native tiny edytor and shortcodes 
 Version:     0.0.1
 Author:      dadmor@gmail.com
 
-Copyright © 2017-2017 Grzegorz Durtan
+Copyright © 2017-2017 FutureNet.club
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@ GNU General Public License for more details.
 
 */
 
+/* init dot.js templates */
 function FN_frontend_editor_enqueue_script()
 {   
- 	/* init dot.js templates */
  	wp_enqueue_script( 'dotjs', plugin_dir_url( __FILE__ ) . 'js/dotjs.min.js' );
 }
 add_action('wp_enqueue_scripts', 'FN_frontend_editor_enqueue_script');
@@ -29,14 +29,11 @@ add_action('wp_enqueue_scripts', 'FN_frontend_editor_enqueue_script');
 
 /* insert frontend editor scripts */
 function editor_scripts() {
-	//global $post;
 	$dir_js = __DIR__.'/js/';
 	$dir_css = __DIR__.'/css/';
-
 	echo "<script>\n";
 	echo file_get_contents(str_replace(array("\r", "\n"), '', $dir_js.'mce-frontend-editor-events.js'));
 	echo "\n</script>";
-
 	echo "<style>\n";
 	echo "/* active editor style */";
 	echo file_get_contents($dir_css.'editor-style.css');
@@ -65,6 +62,7 @@ function bp_docs_add_idle_function_to_tinymce( $initArray ) {
 	return $initArray;
 }
 
+
 /* replace inline shortcode to graphics representation into editor */
 function add_tcustom_tinymce_plugin($plugin_array) {
 	$plugin_array['icitspots'] = plugin_dir_url( __FILE__ ) . 'js/shordcode-renderer.js';
@@ -85,7 +83,6 @@ function my_edit_post_link( $edit, $before, $after) {
 	echo "'area_index':null";
 	echo "};\n";
 	echo "</script>";
-
 	$content = '';
 	$editor_id = 'FN_frontend_editor';
 	$settings =  array(
@@ -103,8 +100,9 @@ function my_edit_post_link( $edit, $before, $after) {
 	$edit .= '</div> ';
 	$edit .= '<div id="FN-editor-modal">';
 		$edit .= '<div id="modal-body">';
-			$edit .= 'Load editor. Please wait...';
+			$edit .= __( 'Load editor. Please wait...', 'FN-frontend-editor' );
 		$edit .= '</div>';
+		$edit .= '<div id="FN-close-modal" onclick="close_modal()">x</div>';
 	$edit .= '</div>';
     return $edit;
 }
@@ -112,7 +110,7 @@ function my_edit_post_link( $edit, $before, $after) {
 
 /* run scripts on frontend_edit */
 if(!is_admin()){
-	if($_GET['editor']=='1'){
+	if(@$_GET['editor']=='1'){
 		add_action( 'wp_footer', 'editor_scripts' );
 		add_filter( 'tiny_mce_before_init', 'bp_docs_add_idle_function_to_tinymce' );
 		include __DIR__.'/inc/shordcode_api.php';
@@ -139,11 +137,11 @@ if(!is_admin()){
 	        'id'     => 'FN-editor-start',
 	        'parent' => null,
 	        'group'  => null,
-	        'title'  => '<span class="dashicons-before dashicons-edit" style="display: inline-block; vertical-align: 15px; color: #9ca1a6; margin-right: 10px;"></span>'.__( 'FN edit', 'some-textdomain' ).'',
+	        'title'  => '<span class="dashicons-before dashicons-edit" style="display: inline-block; vertical-align: 15px; color: #9ca1a6; margin-right: 10px;"></span>'.__( 'FN edit', 'FN-frontend-editor' ).'',
 	        'href'   => get_permalink().'?editor=1',
 	        'meta'   => array(
 	            'target'   => '_self',
-	            'title'    => __( 'FN edit', 'some-textdomain' ),
+	            'title'    => __( 'FN edit', 'FN-frontend-editor' ),
 	            //'class'    => 'edit',
 	            //'rel'      => 'friend',
 	            'tabindex' => PHP_INT_MAX,
@@ -151,12 +149,6 @@ if(!is_admin()){
 	    ) );
 	} );
 }
-
-
-
-
-
-
 
 /* add tab to media uploader */
 /*function wpse_76980_add_upload_tab( $tabs ) {

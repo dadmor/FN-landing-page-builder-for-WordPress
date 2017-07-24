@@ -86,6 +86,20 @@
 	display:block;
 	padding:2em;
 	width:70vw;
+	position:relative;
+}
+
+#FN-close-modal{
+	position:absolute;
+	top:2em;
+	right:2em;
+	width: 2em;
+	height: 2em;
+	background: #fff;
+	color: #333;
+	text-align: center;
+	line-height: 2em;
+
 }
 
 #modal-body .codes-wrap{
@@ -124,6 +138,26 @@
 	line-height: 1.3em;
 	margin-top: 0.5em;
 }
+#modal-body .tabs{
+	display:flex;
+	justify-content: space-between;
+	border-bottom: 1px solid #757575;
+	margin-bottom: 2em;
+
+}
+#modal-body .tabs > div{
+	flex:1;
+	padding:1em 0;
+	text-align: center;
+	color: #3da7e7;
+	cursor: pointer;
+}
+#modal-body .tabs > div.active{
+	background-color: #bbb;
+	color: #fff;
+	border-bottom: 5px solid #757575;
+	cursor: initial;
+}
 
 .form-row{
 	padding: 1em;
@@ -132,12 +166,16 @@
     margin-bottom: 0.5em;
     display:flex;
 }
-.row_prefix{
+.form-row.inactive{
+	opacity:0.5;
+}
+.row_checkbox{
 	flex:0 0 20%;
 }
 .form-row label{
 	flex:0 0 25%;
-	line-height: 2.5em;
+	line-height: 3.5em;
+	color: #343434;
 }
 .form-row input.input{
 	border: 1px solid #ccc;
