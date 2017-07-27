@@ -13,8 +13,11 @@ add_action('admin_footer','my_shortcode_add_shortcode_to_editor');
 function my_shortcode_add_shortcode_to_editor(){?>
 
 <script>
+	var code_serial_number = 0;
+	var code_selected_index = false;
 	var target_tpl = {
-		"popup" : document.getElementById('modal-body')
+		"popup" : document.getElementById('modal-body'),
+
 	}
 
 	var shortcode_data = {
@@ -23,51 +26,62 @@ function my_shortcode_add_shortcode_to_editor(){?>
 			"shortcode":"autoresponder",
 			"name":"Autoresponder",
 			"ico":"megaphone",
-			"options":true
+			"options":true,
 			},
 			{
 			"shortcode":"contact_form",	
 			"name":"Contact form",
 			"ico":"email-alt",
-			"options":false
+			"options":false,
 			},
 			{
 			"shortcode":"ico",
 			"name":"Icons",
 			"ico":"awards",
-			"options":true
+			"options":true,
 			},
 			{
 			"shortcode":"gallery",
 			"name":"Gallery",
 			"ico":"format-gallery",
-			"options":null
+			"options":null,
 			},
 			{
 			"shortcode":"boutique_banner",
 			"name":"boutique_banner",
 			"ico":"paperclip",
-			"options":false
+			"options":false,
 			}
 		],
 		'autoresponder':{
 			"title":"Autoresponder Form Options",
 			"description":"Select active fields on autoresponder form",
 			"shortcode":"autoresponder",
+			"edit_mode":false,
 			"form":[
-					{
-						"title":"User name field",
-						"check_name":"username_active",
-						"check_value":"checked",						
-						"field_name":"username",
-						"field_value":"Insert name",
-					},
 					{
 						"title":"User E-mail field",
 						"check_name":"useremail_active",
 						"check_value":"checked",
 						"field_name":"useremail",
 						"field_value":"Insert email",
+						"field_type":"text"
+					},
+					{
+						"title":"User first name field",
+						"check_name":"userfirstname_active",
+						"check_value":"checked",						
+						"field_name":"userfirstname",
+						"field_value":"Insert first name",
+						"field_type":"text"
+					},
+					{
+						"title":"User last name field",
+						"check_name":"userlastname_active",
+						"check_value":"checked",						
+						"field_name":"userlastname",
+						"field_value":"Insert last name",
+						"field_type":"text"
 					},
 					{
 						"title":"User phone field",
@@ -75,23 +89,67 @@ function my_shortcode_add_shortcode_to_editor(){?>
 						"check_value":"checked",
 						"field_name":"userphone",
 						"field_value":"Insert phone",
+						"field_type":"text"
+					},
+					{
+						"title":"User extra field 1",
+						"check_name":"userextra1_active",
+						"check_value":"checked",
+						"field_name":"userextra1",
+						"field_value":"Insert your eyes colour",
+						"field_type":"text"
+					},
+					{
+						"title":"User extra field 2",
+						"check_name":"userextra2_active",
+						"check_value":"checked",
+						"field_name":"userextra2",
+						"field_value":"Insert your age",
+						"field_type":"text"
+					},
+					{
+						"title":"User extra field 3",
+						"check_name":"userextra3_active",
+						"check_value":"checked",
+						"field_name":"userextra3",
+						"field_value":"Insert your TAX ID",
+						"field_type":"text"
+					},
+					{
+						"title":"Agreement",
+						"check_name":"useragreement_active",
+						"check_value":"checked",
+						"field_name":"useragreement",
+						"field_value":"I agree for procesing my data",
+						"field_type":"checkbox"
 					},
 				],
 			},
+		"autoresponder-options":{
+			"fields":[
+				{
+					"name":"text",
+					"type":"text",
+					"value":"10"
+				}
+
+			]
+		},
 		'ico':{
 			"title":"Icons",
 			"description":"Choose icon",
 			"shortcode":"ico",
+			"edit_mode":false,
 			"form":[
 					{
 						"title":"Icon name",
-						"field_name":"username",
-						"field_value":"Insert name",
+						"field_name":"name",
+						"field_value":"home",
 					},
 					{
 						"title":"Icon size",						
-						"field_name":"useremail",
-						"field_value":"Insert email",
+						"field_name":"class",
+						"field_value":"big",
 					},
 					
 				]
@@ -121,7 +179,7 @@ function my_shortcode_add_shortcode_to_editor(){?>
 				<div class="active" data-target="tab-1" >
 					Autoresponder form options
 				</div>
-				<div data-target="tab-1" onclick="dot_content(shortcode_data.autoresponder,template.autoresponder,target_tpl.popup)">
+				<div data-target="tab-1" onclick="load_data('action=arigatomanager&op=lists',template.autoresponder_options,document.querySelector('.code-form-wrap'))">
 					Autoresponder mailing options
 				</div>
 			</div>
@@ -138,13 +196,19 @@ function my_shortcode_add_shortcode_to_editor(){?>
 						</div>
 					{{~}}
 				</form>
-				<button class="submit" onclick="insert_my_shortcode('{{=it.shortcode}}','{{=it.shortcode}}-edit')">Insert component</button>
-				<br>
+				{{? it.edit_mode }}
+					<button class="submit" onclick="insert_my_shortcode('{{=it.shortcode}}','{{=it.shortcode}}-edit',{{=it.edit_mode}})">Edit component</button>
+				{{??}}
+					<button class="submit" onclick="insert_my_shortcode('{{=it.shortcode}}','{{=it.shortcode}}-edit',{{=it.edit_mode}})">Insert component</button>
+				{{?}}	
 			</div>
 
 			<div class="code-form-wrap" data-tab="tab-2">
 				
 			</div>
+		`,
+		'autoresponder_options':`
+			<pre>{{=it}}</pre>
 		`,
 		'ico':
 		`
@@ -153,6 +217,7 @@ function my_shortcode_add_shortcode_to_editor(){?>
 			<div class="code-ico-wrap">
 				<h2>{{=it.title}}</h2>
 				<p>{{=it.description}}</p>
+	
 				<form id="{{=it.shortcode}}-edit">
 					{{~it.form:value:index}}
 						<div class="form-row">							
@@ -161,25 +226,47 @@ function my_shortcode_add_shortcode_to_editor(){?>
 						</div>
 					{{~}}
 				</form>
-				<button class="submit" onclick="insert_my_shortcode('{{=it.shortcode}}','{{=it.shortcode}}-edit')">Insert component</button>
+				{{? it.edit_mode }}
+				<button class="submit" onclick="insert_my_shortcode('{{=it.shortcode}}','{{=it.shortcode}}-edit',{{=it.edit_mode}})">Edit component</button>
+				{{??}}
+					<button class="submit" onclick="insert_my_shortcode('{{=it.shortcode}}','{{=it.shortcode}}-edit',{{=it.edit_mode}})">Insert component</button>
+				{{?}}	
 				<br>
 			</div>
 
 		`
 	}
 
-	function insert_my_shortcode(_name,_form = null){
+	function insert_my_shortcode(_name,_form = null,_edit=false){
+		
 		if(_form){
 			var data = serializeForm_toArray(document.getElementById(_form));
 			var params = array_to_shortcode(data);
 		}else{
 			var params = '';
 		}
-		tinyMCE.execCommand('mceInsertContent', false, '['+_name+' '+params+']');
-		window.location.href = "#";
+		
+		if(_edit){
+
+			code_selected_index.target.closest('.shortcode_render').setAttribute('data-repr',_name+' '+params);
+
+		}else{
+			
+			tinyMCE.execCommand('mceInsertContent', false, '['+_name+' '+params+']');
+		}
+
+		
+		window.location.href = "#close";
 	}
 
-	var edit_code = function(params){
+	function remove_shordcode_by_id(data_index){
+
+		tinyMCE.activeEditor.dom.remove(tinyMCE.activeEditor.dom.select('div.shortcode_render[data-index='+data_index+']'));
+	}
+
+	var edit_code = function(params,_e){
+
+		code_selected_index = _e;
 		var code = params.split(' ')[0];
 		params = params.replace(/"/g,'","');
 		params = params.replace(/=",/g,'":"');
@@ -189,24 +276,21 @@ function my_shortcode_add_shortcode_to_editor(){?>
 		params = params.slice(0,-2);
 		params = '{"'+params+'}';
 		params = JSON.parse(params);
-
 		for (var i = 0; i < shortcode_data.shortcodes.length; i++) {
 			if( shortcode_data.shortcodes[i]['shortcode'] == code ){
 				if(shortcode_data.shortcodes[i].options){
 					window.location.href = "#FN-editor-modal";
+					shortcode_data[code].edit_mode = true;
 					dot_content(shortcode_data[code],template[code],target_tpl.popup);
+					shortcode_data[code].edit_mode = false;
 				}
 			}
 		}
-		/* merge with existed data */
-		//console.log(params);
+		/* merge options with existed data */
 		var check_inputs = target_tpl.popup.querySelectorAll('input');
 		for (var i = 0; i < check_inputs.length; i++) {
 			var get_val = params[check_inputs[i].name]
 			check_inputs[i].value = get_val;
-
-			//console.log(check_inputs[i].name+':'+get_val);
-
 			if(check_inputs[i].type == 'checkbox'){
 				
 				if( check_inputs[i].value == 'on'){
@@ -220,9 +304,29 @@ function my_shortcode_add_shortcode_to_editor(){?>
 				
 			}
 	    }
-	    //console.log(params);
-	
 	}
+
+	var load_data = function(params,template,target){
+		var xmlhttp=new XMLHttpRequest();
+		var _t = target;
+		var _tpl = template;
+		
+		var data = params;
+		xmlhttp.open("POST",window.FN_editor_data.url+"/wp-admin/admin-ajax.php",true);
+		xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		xmlhttp.send(data);
+		xmlhttp.onreadystatechange=function()
+		{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				console.log(xmlhttp);
+				dot_content(JSON.parse(xmlhttp.response),_tpl,_t);
+			}
+		}
+
+	}
+	
+	console.log('load data');
 
 	var dot_content = function(_data,_template,_target){
 		var tempFn = doT.template(_template);
@@ -231,7 +335,7 @@ function my_shortcode_add_shortcode_to_editor(){?>
 	}
 
 	var close_modal = function(){
-		window.location.href = "#";
+		window.location.href = "#close";
 	}
 
 	function getQueryParam(name) {
@@ -285,7 +389,7 @@ function my_shortcode_add_shortcode_to_editor(){?>
 
 	window.editor_completed = function(){
 		if(!query_modal_data){
-			window.location.href = "#";
+			window.location.href = "#close";
 		}
 	}
 

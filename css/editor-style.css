@@ -2,13 +2,16 @@
 	display:none;
 }
 #FN-editor-wrapper{
-	background-color: rgba(255, 255, 255, 0.9);
-	width:100%;
+	/*background-color: rgba(255, 255, 255, 0.9);
+	
 	height:100%;
+	
+	*/
+	width:100%;
 	top:0;
 	left:0;
 	position:absolute;
-	margin-top: -5em;
+	/*margin-top: -5em;*/
 }
 #wp-FN_frontend_editor-wrap{
 	position: absolute;
@@ -28,7 +31,7 @@
 	outline: 1px dashed #000;
 }
 .entry-content .FN_edit:hover{
-	outline: 1px dashed #ccc;
+	outline: 1px dashed #fff;
 	cursor:pointer;
 }
 #wp-FN_frontend_editor-media-buttons{
@@ -39,12 +42,20 @@
 }
 #wp-FN_frontend_editor-media-buttons > *{
 	flex:1;
-	margin:0.5em 2em;
+	margin:0.5em 1em;
 }
 
 #insert-media-button{
 	margin-right:2px;
 }
+#close_content_button{
+	flex: 0.1;
+	padding: 0.5em;
+	background: #eee;
+	color: #666;
+}
+
+
 #wp-FN_frontend_editor-media-buttons .dashicons{
 	vertical-align: -6px;
 	margin-right: 5px;
@@ -81,24 +92,28 @@
 	-webkit-transition: background 1s ease-in-out;
 	transition: background 1s ease-in-out, transform .5s ease-in-out;
 } 
+
 #modal-body{
 	background-color: #fff;
 	display:block;
 	padding:2em;
 	width:70vw;
 	position:relative;
+	overflow-y: scroll;
+	max-height: 80vh;
 }
 
 #FN-close-modal{
-	position:absolute;
-	top:2em;
-	right:2em;
-	width: 2em;
-	height: 2em;
+	position: absolute;
+	top: 10%;
+	right: 10%;
+	width: 3em;
+	height: 3em;
 	background: #fff;
 	color: #333;
 	text-align: center;
-	line-height: 2em;
+	line-height: 3em;
+	cursor:pointer;
 
 }
 
@@ -192,6 +207,14 @@
 	border: 1px solid #818181;
 	border-radius: initial;
 	float: right;
+	margin-bottom:1em;
+
+}
+section{
+	transition: background-color 300ms linear;
+}
+section:hover{
+	background:rgba(0,0,0,0.3);
 }
 
 

@@ -100,7 +100,7 @@ function my_edit_post_link( $edit, $before, $after) {
 	$edit .= '</div> ';
 	$edit .= '<div id="FN-editor-modal">';
 		$edit .= '<div id="modal-body">';
-			$edit .= __( 'Load editor. Please wait...', 'FN-frontend-editor' );
+		$edit .= __( 'Load editor. Please wait...', 'FN-frontend-editor' );
 		$edit .= '</div>';
 		$edit .= '<div id="FN-close-modal" onclick="close_modal()">x</div>';
 	$edit .= '</div>';
@@ -125,7 +125,7 @@ if(!is_admin()){
 	add_action('media_buttons_context','add_tinymce_save_post_button');
 }
 function add_tinymce_save_post_button($context){
-	return $context.='<button id="save_content_button" class="save-button">Save content</button>';
+	return $context.='<button id="save_content_button" class="save-button">Save content</button><button id="close_content_button">exit</button>';
 }
 
 
@@ -137,7 +137,7 @@ if(!is_admin()){
 	        'id'     => 'FN-editor-start',
 	        'parent' => null,
 	        'group'  => null,
-	        'title'  => '<span class="dashicons-before dashicons-edit" style="display: inline-block; vertical-align: 15px; color: #9ca1a6; margin-right: 10px;"></span>'.__( 'FN edit', 'FN-frontend-editor' ).'',
+	        'title'  => '<span class="dashicons-before dashicons-edit" style="display: inline-block; vertical-align: -6px; color: #9ca1a6; margin-right: 10px;"></span>'.__( 'FN edit', 'FN-frontend-editor' ).'',
 	        'href'   => get_permalink().'?editor=1',
 	        'meta'   => array(
 	            'target'   => '_self',

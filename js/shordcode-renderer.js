@@ -23,21 +23,17 @@
 		},
 
 		_do_spot : function(co,_t) {
-			//console.log(co);
-			/*return co.replace(/\[contact_form([^\]]*)\]/g, function(a,b){
-				return '<div style="border:2px dashed #333" onclick="alert(\'asdas\')">'+tinymce.DOM.encode(b)+'</div>';
-			});*/
-
 			var _res = co.replace(/(\[([\w_]+)[^\]]*\]([^\[]*\[\/\2])?)/g, function(a, b, c){
-				return '<div class="shortcode_render" contenteditable=false data-repr=\''+tinymce.DOM.encode(a.slice(1, -1))+'\'>'+c+'<div class="shortcode_end">end</div></div>';
+				code_serial_number++;
+				return '<div class="shortcode_render" contenteditable=false data-index=\''+code_serial_number+'\' data-repr=\''+tinymce.DOM.encode(a.slice(1, -1))+'\' >'+c+'<div class="shortcode_end"><div class="edit">edit</div><div class="delete">delete</div></div></div>';
 			});
 			return _res;
 
 		},
 
 		_get_spot : function(co) {
-			_res = co.replace(/<div class="shortcode_render" contenteditable="false" data-repr="([^"]*)(?:(?!<div class="shortcode_end">).)*(<div class="shortcode_end">)(?:(?!<\/div><\/div>).)*<\/div><\/div>/g, function(a, b){
-				return '['+tinymce.DOM.decode(b)+']';
+			_res = co.replace(/<div class="shortcode_render" contenteditable="false" data-index="(\d+)" data-repr="([^"]*)(?:(?!<div class="shortcode_end">).)*(<div class="shortcode_end">)(?:(?!<\/div><\/div>).)*<\/div><\/div><\/div>/g, function(a, b, c){
+				return '['+tinymce.DOM.decode(c)+']';
 			});
 			return _res;
 		}
@@ -46,8 +42,15 @@
 	var tiny_element_click = function(e){
 
 		try {
-    		var code_data = e.target.closest('.shortcode_render').getAttribute('data-repr');
-    		edit_code(code_data);
+			var code_data = e.target.closest('.shortcode_render').getAttribute('data-repr');
+			var code_index = e.target.closest('.shortcode_render').getAttribute('data-index');
+			if(e.target.classList[0] == 'edit'){
+				edit_code(code_data,e);
+
+			}
+			if(e.target.classList[0] == 'delete'){
+				e.target.closest('.shortcode_render').remove();
+			}
 		}
 		catch(err) {}
 

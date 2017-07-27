@@ -14,8 +14,11 @@ if( current_user_can('edit_others_pages') ) {
 			$data['contentpart'] = base64_decode ($data['contentpart']); 
 
 			/* replace tinny quotes for " */
-			$data['content'] = str_replace("%#%", "\"", $data['content']);
-			$data['contentpart'] = str_replace("%#%", "\"", $data['contentpart']);
+			//$data['content'] = str_replace("%#%", "\"", $data['content']);
+			//$data['contentpart'] = str_replace("%#%", "\"", $data['contentpart']);
+
+			//$data['content'] = mb_convert_encoding($data['content'], "UTF-8")
+			//$data['contentpart'] = mb_convert_encoding($data['contentpart'], "UTF-8")
 
 			// Update post 37
 			$my_post = array(
@@ -29,7 +32,7 @@ if( current_user_can('edit_others_pages') ) {
 			$data['content'] = apply_filters('the_content', $data['content']);
 			$data['contentpart'] = apply_filters('the_content', $data['contentpart']);
 			
-			
+			//var_dump($data);
 			echo json_encode($data);
 		}
 

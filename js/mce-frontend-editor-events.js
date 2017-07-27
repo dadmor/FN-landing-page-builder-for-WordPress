@@ -19,9 +19,15 @@ if(classname.length != 0){
 var _D_editor = document.getElementById('wp-FN_frontend_editor-wrap');
 _D_editor.addEventListener('click', editor_wrapper, false);
 
+
+
 var _D_save = document.getElementById('save_content_button');
 _D_save.addEventListener('click', save_content, false);
 
+var _D_close = document.getElementById('close_content_button');
+_D_close.addEventListener('click', close_content, false);
+
+var _D_body = document.getElementsByTagName('body')[0];
 /* <button type="button" id="insert-media-button" class="button insert-media add_media" data-editor="FN_frontend_editor"><span class="wp-media-buttons-icon"></span> Dodaj medium</button> */
 
 function selectEditableArea(e){
@@ -29,7 +35,7 @@ function selectEditableArea(e){
     var el_position = this.getBoundingClientRect();
 	var _D_mask = document.getElementById('FN-editor-wrapper');
 	var _D_editor = document.getElementById('wp-FN_frontend_editor-wrap');
-	var _D_body = document.getElementsByTagName('body')[0];
+	
 	var _D_content = document.getElementById('FN_content_before_filtering');
 	var _D_frame = document.getElementById('FN_frontend_editor_ifr');
 
@@ -50,10 +56,21 @@ function selectEditableArea(e){
 }
 
 function save_content(e){
-	var _D_mask = document.getElementById('FN-editor-wrapper');
+	
+    var _D_mask = document.getElementById('FN-editor-wrapper');
 	_D_mask.classList.add('hide');
+    window.scrollTo(0,window.pageYOffset+10);
+    //tinymce.activeEditor.execCommand('mceCleanup');
+    //tinymce.activeEditor.execCommand('RemoveFormat');
 	update_content_technical_container(tinymce.activeEditor.getContent());
+
 }
+function close_content(e){
+    window.scrollTo(0,window.pageYOffset+10);
+    var _D_mask = document.getElementById('FN-editor-wrapper');
+    _D_mask.classList.add('hide');
+}
+
 function editor_wrapper(e){
 	//e.preventDefault();
 	//e.cancelBubble = true
@@ -69,7 +86,8 @@ function update_content_technical_container(content){
     window.FN_editor_data.area_index = area_index;
     
 	//console.log(_D_content.innerHTML);
-	loadFile(function(res) {		
+	loadFile(function(res) {
+        console.log(res);	
 		var out = JSON.parse(res);
         console.log(out);
         document.querySelector(content_main_container_selector).getElementsByClassName(editableClass)[out.area_index].innerHTML = out.contentpart;
